@@ -15,7 +15,7 @@ Este é um projeto em Python que permite a cópia de arquivos entre sistemas Win
 1. Clone o repositório para o seu sistema.
 2. Certifique-se de que você tenha Python 3 instalado no seu sistema.
 3. Instale as bibliotecas necessárias com o seguinte comando: pip install tkinter
-4. Execute o script `copiar_arquivos.py`: python copiar_arquivos.py
+4. Execute o script `roboco-py.py`: 
 5. Selecione a origem e o destino dos arquivos que deseja copiar.
 6. Escolha as opções desejadas, como copiar diretórios vazios ou diretórios ocultos.
 7. Clique em "Iniciar Cópia" para iniciar o processo de cópia.
