@@ -1,0 +1,12 @@
+project_folder/
+│
+├── src/
+│   ├── main.py
+│   ├── sistema_info.py
+│   ├── recursos_limitados.py
+│   ├── log.py
+│   ├── copia_arquivos.py
+│
+├── logs/
+│
+└── requirements.txt

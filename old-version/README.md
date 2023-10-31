@@ -1,4 +1,3 @@
-@ -1,31 +0,0 @@
 ## ROBOCO.py 
 ## Projeto de Cópia de Arquivos entre Sistemas Windows e Linux
 

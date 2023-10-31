@@ -1,17 +1,11 @@
-## Nova versão em desenvolvimento que tratará os erros devidamente.
+# Versão Inicial - para garantir seu funcionamento, o usuario precisa HABILITAR as pastas ocultas do Windows.
 
 import subprocess
 import tkinter as tk
 from tkinter import filedialog
 import os
 import platform
-import signal
-import logging
 from threading import Thread
-
-logging.basicConfig(filename='log_copia_arquivos.log', level=logging.INFO, format='%(asctime)s - %(message)s')
-
-copia_em_progresso = False
 
 def selecionar_diretorio(label):
     diretorio = filedialog.askdirectory()
@@ -19,34 +13,50 @@ def selecionar_diretorio(label):
     label.insert(0, diretorio)
 
 def copiar_windows_para_windows(origem, destino, copiar_vazios, copiar_ocultos):
-    global copia_em_progresso
-    copia_em_progresso = True
-
-    def handler(sig, frame):
-        nonlocal copia_em_progresso
-        copia_em_progresso = False
-
-    signal.signal(signal.SIGINT, handler)
-
     comando = ["robocopy", origem, destino]
 
     if copiar_vazios:
-        comando.append("/E") 
+        comando.append("/E")  # Copiar diretórios vazios
 
     if copiar_ocultos:
-        comando.append("/AH")  
+        comando.append("/AH")  # Copiar diretórios ocultos
 
     try:
         subprocess.run(comando, check=True)
         resultado.config(text="Cópia bem-sucedida.")
-        logging.info(f'Cópia bem-sucedida: {origem} para {destino}')
     except subprocess.CalledProcessError as e:
-        if copia_em_progresso:
-            resultado.config(text=f"Erro ao copiar: {e}")
-            logging.error(f'Erro ao copiar: {origem} para {destino}. Motivo: {e}')
-        else:
-            resultado.config(text="Cópia interrompida pelo usuário.")
-            logging.warning(f'Cópia interrompida pelo usuário: {origem} para {destino}')
+        resultado.config(text=f"Erro ao copiar: {e}")
+
+def copiar_linux_para_linux(origem, destino, copiar_vazios, copiar_ocultos):
+    comando = ["rsync", "-av", origem, destino]
+
+    if copiar_ocultos:
+        comando.append("--exclude=.*")  
+
+    try:
+        subprocess.run(comando, check=True)
+        resultado.config(text="Cópia bem-sucedida de Linux para Linux.")
+    except subprocess.CalledProcessError as e:
+        resultado.config(text=f"Erro ao copiar: {e}")
+
+def copiar_windows_para_linux(origem, destino, copiar_vazios, copiar_ocultos):
+    comando = ["scp", "-r", origem, f"{destino}/"]
+
+    try:
+        subprocess.run(comando, check=True)
+        resultado.config(text="Cópia bem-sucedida de Windows para Linux.")
+    except subprocess.CalledProcessError as e:
+        resultado.config(text=f"Erro ao copiar: {e}")
+
+def copiar_linux_para_windows(origem, destino, copiar_vazios, copiar_ocultos):
+
+    comando = ["smbclient", f"//{destino}", "-c", f"lcd {origem}; prompt; recurse; mget *"]
+
+    try:
+        subprocess.run(comando, check=True)
+        resultado.config(text="Cópia bem-sucedida de Linux para Windows.")
+    except subprocess.CalledProcessError as e:
+        resultado.config(text=f"Erro ao copiar: {e}")
 
 def iniciar_copia():
     origem = entrada_origem.get()
@@ -62,25 +72,27 @@ def iniciar_copia():
     sistema_operacional = platform.system()
 
     if sistema_operacional == "Windows":
-        direcao_copia = "windows_para_windows"  
+        direcao_copia = "windows_para_windows"  # Defina a direção padrão para Windows
     elif sistema_operacional == "Linux":
-        direcao_copia = "linux_para_linux" 
+        direcao_copia = "linux_para_linux"  # Defina a direção padrão para Linux
     else:
         resultado.config(text="Sistema operacional não suportado.")
         return
 
     if direcao_copia == "windows_para_windows":
         copiar_windows_para_windows(origem, destino, copiar_vazios, copiar_ocultos)
+    elif direcao_copia == "linux_para_linux":
+        copiar_linux_para_linux(origem, destino, copiar_vazios, copiar_ocultos)
+    elif direcao_copia == "windows_para_linux":
+        copiar_windows_para_linux(origem, destino, copiar_vazios, copiar_ocultos)
+    elif direcao_copia == "linux_para_windows":
+        copiar_linux_para_windows(origem, destino, copiar_vazios, copiar_ocultos)
 
-def parar_copia():
-    global copia_em_progresso
-    copia_em_progresso = False
-    resultado.config(text="Cópia interrompida pelo usuário.")
-    logging.warning("Cópia interrompida pelo usuário.")
-
+# Cria a janela principal
 janela = tk.Tk()
-janela.title("Cópia de Arquivos")
+janela.title("Roboco.py")
 
+# Cria elementos da interface
 origem_label = tk.Label(janela, text="Origem:")
 entrada_origem = tk.Entry(janela)
 selecionar_origem_button = tk.Button(janela, text="Selecionar", command=lambda: selecionar_diretorio(entrada_origem))
@@ -96,9 +108,9 @@ copiar_diretorios_ocultos = tk.BooleanVar()
 copiar_diretorios_ocultos_checkbox = tk.Checkbutton(janela, text="Copiar diretórios ocultos", variable=copiar_diretorios_ocultos)
 
 copiar_button = tk.Button(janela, text="Iniciar Cópia", command=iniciar_copia)
-parar_button = tk.Button(janela, text="Parar Cópia", command=parar_copia)
 resultado = tk.Label(janela, text="")
 
+# Organizar elementos na interface
 origem_label.grid(row=0, column=0)
 entrada_origem.grid(row=0, column=1)
 selecionar_origem_button.grid(row=0, column=2)
@@ -111,7 +123,6 @@ copiar_diretorios_vazios_checkbox.grid(row=2, column=0, columnspan=3)
 copiar_diretorios_ocultos_checkbox.grid(row=3, column=0, columnspan=3)
 
 copiar_button.grid(row=4, column=0, columnspan=3)
-parar_button.grid(row=5, column=0, columnspan=3)
-resultado.grid(row=6, column=0, columnspan=3)
+resultado.grid(row=5, column=0, columnspan=3)
 
 janela.mainloop()

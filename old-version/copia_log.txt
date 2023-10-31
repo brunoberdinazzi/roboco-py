@@ -1,0 +1,1 @@
+[2023-10-31 16:28:08] Erro ao copiar: Command '['robocopy', 'C:/Users/mardo/Downloads/Telegram Desktop', 'C:/Users/mardo/OneDrive/Área de Trabalho/Teste', '/E', '/A+H']' returned non-zero exit status 16.
