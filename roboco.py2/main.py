@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
-import platform  # Importe o módulo platform
+import platform  
 from recursos_limitados import RecursosLimitados
 from log import Log
 from copia_arquivos import CopiaArquivos
@@ -33,8 +33,8 @@ def iniciar_copia(entrada_origem, entrada_destino, copiar_diretorios_vazios, cop
 
     copia_arquivos = CopiaArquivos()
 
-    recursos_limitados.limitar_recursos(memoria_limite, cpu_cores)  # Limita recursos
-    log.limpar_log()  # Limpa o arquivo de log antes da cópia
+    recursos_limitados.limitar_recursos(memoria_limite, cpu_cores) 
+    log.limpar_log()  
 
     try:
         if direcao_copia == "windows_para_windows":

@@ -1,5 +1,3 @@
-# Nova versão em desenvolvimento 
-
 import subprocess
 import tkinter as tk
 from tkinter import filedialog
@@ -7,6 +5,10 @@ import os
 import platform
 import psutil
 import datetime
+from robocopySecondgen.robopy.sistema_info import SistemaInfo
+from robocopySecondgen.robopy.recursos_limitados import RecursosLimitados
+from robocopySecondgen.robopy.log import Log
+from robocopySecondgen.robopy.copia_arquivos import CopiaArquivos
 
 class SistemaInfo:
     def obter_informacoes_sistema(self):
@@ -96,48 +98,6 @@ def iniciar_copia():
         resultado.config(text="Cópia bem-sucedida.")
     except Exception as e:
         resultado.config(text=f"Erro ao copiar: {e}")
-
-class CopiaArquivos:
-    def copiar_windows_para_windows(self, origem, destino, copiar_vazios, copiar_ocultos, log):
-        comando = ["robocopy", origem, destino]
-
-        if copiar_vazios:
-            comando.append("/E")  # Copiar diretórios vazios
-
-        if copiar_ocultos:
-            comando.append("/A+H")  # Copiar diretórios ocultos
-
-        try:
-            subprocess.run(comando, check=True)
-        except subprocess.CalledProcessError as e:
-            log.registrar_mensagem(f"Erro ao copiar: {e}")
-
-    def copiar_linux_para_linux(self, origem, destino, copiar_vazios, copiar_ocultos, log):
-        comando = ["rsync", "-av", origem, destino]
-
-        if copiar_ocultos:
-            comando.append("--exclude=.*")
-
-        try:
-            subprocess.run(comando, check=True)
-        except subprocess.CalledProcessError as e:
-            log.registrar_mensagem(f"Erro ao copiar: {e}")
-
-    def copiar_windows_para_linux(self, origem, destino, copiar_vazios, copiar_ocultos, log):
-        comando = ["scp", "-r", origem, f"{destino}/"]
-
-        try:
-            subprocess.run(comando, check=True)
-        except subprocess.CalledProcessError as e:
-            log.registrar_mensagem(f"Erro ao copiar: {e}")
-
-    def copiar_linux_para_windows(self, origem, destino, copiar_vazios, copiar_ocultos, log):
-        comando = ["smbclient", f"//{destino}", "-c", f"lcd {origem}; prompt; recurse; mget *"]
-
-        try:
-            subprocess.run(comando, check=True)
-        except subprocess.CalledProcessError as e:
-            log.registrar_mensagem(f"Erro ao copiar: {e}")
 
 # Cria a janela principal
 janela = tk.Tk()
