@@ -10,4 +10,4 @@ class Log:
             file.write(f"[{timestamp}] {mensagem}\n")
 
     def limpar_log(self):
-        open(self.log_file, "w").close()  # Limpa o arquivo de log
+        open(self.log_file, "w").close()

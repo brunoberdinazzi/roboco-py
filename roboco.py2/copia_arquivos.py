@@ -1,14 +1,16 @@
 import subprocess
+import platform
+from log import Log
 
 class CopiaArquivos:
     def copiar_windows_para_windows(self, origem, destino, copiar_vazios, copiar_ocultos, log):
         comando = ["robocopy", origem, destino]
 
         if copiar_vazios:
-            comando.append("/E")  # Copiar diretórios vazios
+            comando.append("/E")
 
         if copiar_ocultos:
-            comando.append("/AH")  # Copiar diretórios ocultos
+            comando.append("/AH")
 
         try:
             subprocess.run(comando, check=True)

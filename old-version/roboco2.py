@@ -141,7 +141,7 @@ class CopiaArquivos:
 
 # Cria a janela principal
 janela = tk.Tk()
-janela.title("Cópia de Arquivos")
+janela.title("Roboco.py")
 
 # Cria elementos da interface
 origem_label = tk.Label(janela, text="Origem:")

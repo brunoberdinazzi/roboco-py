@@ -1,12 +1,13 @@
-project_folder/
+Roboco.py2/
 │
-├── src/
-│   ├── main.py
-│   ├── sistema_info.py
-│   ├── recursos_limitados.py
-│   ├── log.py
-│   ├── copia_arquivos.py
+├── main.py
 │
-├── logs/
+├── sistema_info.py
 │
-└── requirements.txt
+├── recursos_limitados.py
+│
+├── log.py
+│
+├── copia_arquivos.py
+│
+└── interface_grafica.py
