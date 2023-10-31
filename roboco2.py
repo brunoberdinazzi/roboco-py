@@ -1,3 +1,5 @@
+## Nova versão em desenvolvimento que tratará os erros devidamente.
+
 import subprocess
 import tkinter as tk
 from tkinter import filedialog
